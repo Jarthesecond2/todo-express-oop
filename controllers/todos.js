@@ -5,14 +5,24 @@ class todoController {
         this.TODOS = []
     }
 
-    createTodo(req, res){
+    async createTodo(req, res){
         const task = req.body.task
         const newTodo = new Todo(Math.random().toString(), task)
         this.TODOS.push(newTodo)
+        await fileManager.writeFile("./data/todods.json", this.TODOS)
         res.json({
             message: "created new todo",
             newTask: newTodo
         })
+    }
+
+    async initTodos(){
+        const todosData = await fileManager.readFile("./data/todos.json")
+        if(todosData !== null){
+            this.TODOS = todosData
+        } else {
+            this.TODOS = []
+        }
     }
 
     getTodos(req, res){
